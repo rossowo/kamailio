@@ -165,6 +165,7 @@ static int w_ds_set_dst(struct sip_msg*, char*, char*);
 static int w_ds_set_domain(struct sip_msg*, char*, char*);
 static int w_ds_mark_dst0(struct sip_msg*, char*, char*);
 static int w_ds_mark_dst1(struct sip_msg*, char*, char*);
+static int w_ds_query_dst(struct sip_msg*, char*, char*);
 static int w_ds_load_unset(struct sip_msg*, char*, char*);
 static int w_ds_load_update(struct sip_msg*, char*, char*);
 
@@ -210,6 +211,8 @@ static cmd_export_t cmds[]={
 	{"ds_mark_dst",      (cmd_function)w_ds_mark_dst0,     0,
 		ds_warn_fixup, 0, REQUEST_ROUTE|FAILURE_ROUTE|ONREPLY_ROUTE},
 	{"ds_mark_dst",      (cmd_function)w_ds_mark_dst1,     1,
+		ds_warn_fixup, 0, REQUEST_ROUTE|FAILURE_ROUTE|ONREPLY_ROUTE},
+	{"ds_query_dst",      (cmd_function)w_ds_query_dst,     0,
 		ds_warn_fixup, 0, REQUEST_ROUTE|FAILURE_ROUTE|ONREPLY_ROUTE},
 	{"ds_is_from_list",  (cmd_function)w_ds_is_from_list0, 0,
 		0, 0, REQUEST_ROUTE|FAILURE_ROUTE|ONREPLY_ROUTE|BRANCH_ROUTE},
@@ -884,6 +887,22 @@ static int w_ds_mark_dst1(struct sip_msg *msg, char *str1, char *str2)
 	sval.len = strlen(str1);
 
 	return ki_ds_mark_dst_state(msg, &sval);
+}
+
+/**
+ *
+ */
+static int ki_ds_query_dst(sip_msg_t *msg)
+{
+	return ds_query_dst(msg);
+}
+
+/**
+ *
+ */
+static int w_ds_query_dst(struct sip_msg *msg, char *str1, char *str2)
+{
+	return ds_query_dst(msg);
 }
 
 /**
