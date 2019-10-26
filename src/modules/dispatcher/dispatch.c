@@ -2502,6 +2502,35 @@ int ds_mark_dst(struct sip_msg *msg, int state)
 	return (ret == 0) ? 1 : -1;
 }
 
+int ds_query_dst(struct sip_msg *msg, int state)
+{
+	sr_xavp_t *rxavp = NULL;
+	int group;
+	str *address
+	int ret;
+
+	if(ds_xavp_dst.len<=0) {
+		LM_WARN("no xavp name to store dst records\n");
+		return -1;
+	}
+	
+	rxavp = xavp_get_child_with_ival(&ds_xavp_dst, &ds_xavp_dst_grp);
+	if(rxavp == NULL)
+		return -1; /* grp xavp not available */
+	group = rxavp->val.v.i;
+
+	rxavp = xavp_get_child_with_sval(&ds_xavp_dst, &ds_xavp_dst_addr);
+	if(rxavp == NULL )
+		return -1; /* dst addr uri not available */
+	address = &rxavp->val.v.s
+
+	LM_DBG("state [%d] grp [%d] dst [%.*s]\n", state, group, address->len, address->s);
+
+	ret = ds_get_state(group, address);
+	
+	return (ret > 0) ? ret : -1;
+}
+
 static inline void latency_stats_update(ds_latency_stats_t *latency_stats, int latency) {
 	/* after 2^21 ~24 days at 1s interval, the average becomes a weighted average */
 	if (latency_stats->count < 2097152) {
@@ -2669,7 +2698,7 @@ int ds_get_state(int group, str *address)
 }
 
 /**
- * Update destionation's state
+ * Update destination's state
  */
 int ds_update_state(sip_msg_t *msg, int group, str *address, int state)
 {
