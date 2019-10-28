@@ -2502,7 +2502,7 @@ int ds_mark_dst(struct sip_msg *msg, int state)
 	return (ret == 0) ? 1 : -1;
 }
 
-int ds_query_dst(struct sip_msg *msg, int state)
+int ds_query_dst(struct sip_msg *msg)
 {
 	sr_xavp_t *rxavp = NULL;
 	int group;
@@ -2524,7 +2524,7 @@ int ds_query_dst(struct sip_msg *msg, int state)
 		return -1; /* dst addr uri not available */
 	address = &rxavp->val.v.s
 
-	LM_DBG("state [%d] grp [%d] dst [%.*s]\n", state, group, address->len, address->s);
+	LM_DBG("grp [%d] dst [%.*s]\n", state, group, address->len, address->s);
 
 	ret = ds_get_state(group, address);
 	
